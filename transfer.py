@@ -25,7 +25,7 @@ from time import gmtime, strftime
 
 ###### configuration #######
 
-listen_port = 8000
+listen_port = 8003	
 target_socket = 'http://127.0.0.1:8889'
 dir_base = '/Users/haozigege'
 http_log_enable = True
@@ -112,8 +112,18 @@ class CustomHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			real_path = dir_base + self.path[len(admin_router):]
 			if not real_path:
 				real_path = dir_base + '/'
-			f = self.list_directory(real_path)
-			self.copyfile(f, self.wfile)
+			if os.path.isdir(real_path):
+				f = self.list_directory(real_path)
+				self.copyfile(f, self.wfile)
+			elif os.path.exists(real_path):
+				# I am sure it's a normal file
+				f = open(real_path,'rb')
+				self.send_response(200)
+				self.send_header('Content-type', 'text/html')
+				self.end_headers()
+				self.copyfile(f, self.wfile)
+			return ""
+
 		# transfer our data to remote server
 		else:
 			if self.command == 'GET':
@@ -201,6 +211,9 @@ class CustomHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 		# send http data and get response
 		r = self.my_http_handle()
+		# if r is null, it could be boiled down to errors or the acess of admin url
+		if not r:
+			return
 
 		# get the http response data
 		self.raw_reply_http(r.status_code,r.headers,r.content)
