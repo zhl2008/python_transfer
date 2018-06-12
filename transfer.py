@@ -25,16 +25,16 @@ from time import gmtime, strftime
 
 ###### configuration #######
 
-listen_port = 8003	
-target_socket = 'http://127.0.0.1:8889'
+listen_port = 28080	
+target_socket = 'http://127.0.0.1:8080'
 dir_base = '/Users/haozigege'
 http_log_enable = True
 evil_log_enable = True
 flag_detect_enable = True
 waf_enable = False
-flag_regex_pattern = "flag\{[0-9a-fA-F]{32}\}"
-fake_flag = "flag{b821f0660d8ac03ffd9d4c865f1aac78}"
-resp_log_len = 200
+flag_regex_pattern = "TSCTF\{[0-9a-fA-F]{32}\}"
+fake_flag = "TSCTF{b821f0660d8ac03ffd9d4c865f1aac78}"
+resp_log_len = 1000
 admin_router = '/haozigege666'
 timeout = 2
 all_log_dir = './logs/all_log/'
@@ -53,7 +53,7 @@ self.path           http url
 self.requestline    http line
 self.headers        http headers
 self.rfile          http request data
-self.wfile   		http response data
+self.wfile   	    http response data
 
 '''
 
@@ -85,10 +85,7 @@ class CustomHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		for header in headers:
 			self.raw_response += header + ": " + str(headers[header]) + "\n"
 		self.raw_response += "\n"
-		if len(content)>resp_log_len:
-			self.raw_response += content[:resp_log_len] + '......'
-		else:
-			self.raw_response += content
+		self.raw_response += content
 		self.raw_response += "\n"
 
 
@@ -98,6 +95,9 @@ class CustomHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 			os.mkdir(log_dir)
 		now_time = strftime("_%d_%H_", gmtime()) + str((int(gmtime().tm_min)/round_time))
 		file_name = self.client_address[0] + now_time + '.log'
+		# to prevent the length of log becomes too large
+		if len(content) > resp_log_len:
+		    content = content[:resp_log_len] + '......'
 		open(log_dir + file_name,'a').write(content)
 
 
