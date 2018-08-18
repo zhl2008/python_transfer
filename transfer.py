@@ -15,6 +15,7 @@ the traffic from both sides.
 '''
 
 import os
+import socket
 import sys
 import SimpleHTTPServer
 import SocketServer
@@ -25,13 +26,13 @@ from time import gmtime, strftime
 
 ###### configuration #######
 
-listen_port = 28080	
-target_socket = 'http://127.0.0.1:8080'
+listen_port = 8080	
+target_socket = 'http://127.0.0.1:6666'
 dir_base = '/Users/haozigege'
 http_log_enable = True
 evil_log_enable = True
 flag_detect_enable = True
-waf_enable = False
+waf_enable = True
 flag_regex_pattern = "TSCTF\{[0-9a-fA-F]{32}\}"
 fake_flag = "TSCTF{b821f0660d8ac03ffd9d4c865f1aac78}"
 resp_log_len = 1000
@@ -148,7 +149,7 @@ class CustomHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 
 	def is_evil(self):
 		self.sql_rule = 'select|insert|update|delete|union|load_file|outfile|dumpfile|sub|hex'
-		self.php_rule = 'file_put_contents|fwrite|curl|system|eval|assert'
+		self.php_rule = 'file_put_contents|fwrite|curl|system|eval|assert|flag'
 		self.cmd_rule_1 = 'passthru|exec|system|chroot|scandir|chgrp|chown|shell_exec|proc_open|proc_get_status|popen|ini_alter|ini_restore'
 		self.cmd_rule_2 = '`|openlog|syslog|readlink|symlink|popepassthru|stream_socket_server|assert|pcntl_exe'
 
@@ -239,7 +240,12 @@ class CustomHTTPRequestHandler(SimpleHTTPServer.SimpleHTTPRequestHandler):
 		headers = r.headers
 		self.my_http_response(status_code,headers,content)
 
+# update the server_bind function to reuse the port 
+class MyTCPServer(SocketServer.TCPServer):
+    def server_bind(self):
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.socket.bind(self.server_address)
 
-httpd = SocketServer.TCPServer(("", listen_port), CustomHTTPRequestHandler)
+httpd = MyTCPServer(("", listen_port), CustomHTTPRequestHandler)
 print "serving at port", listen_port
 httpd.serve_forever()

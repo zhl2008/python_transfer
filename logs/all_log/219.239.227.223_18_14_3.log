@@ -1,0 +1,21 @@
+
+GET / HTTP/1.1
+Host: en:8080
+Connection: keep-alive
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/68.0.3440.106 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,zh-TW;q=0.7,pl;q=0.6
+Cookie: sessionid=iw4h6c3547vppsm3x4vhc6i0g2f8qq58; csrftoken=IEWWxzOa49KYHH43ptwPrM2garv5RMy2mKZvEziyLIJW8YUmOy2yXVlqr2Bq9WeO
+If-None-Match: W/"1896-1534340853000"
+If-Modified-Since: Wed, 15 Aug 2018 13:47:33 GMT
+
+
+
+HTTP/1.0 304 OK
+Server: Apache-Coyote/1.1
+ETag: W/"1896-1534340853000"
+Date: Sat, 18 Aug 2018 14:16:11 GMT
+
+

